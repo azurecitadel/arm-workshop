@@ -3,22 +3,22 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "storageAccountPrefix": {
-           "type": "string",
-           "defaultValue": "richeneystg",
-           "maxLength": 11,
-           "metadata": {
+            "type": "string",
+            "defaultValue": "richeneystg",
+            "maxLength": 11,
+            "metadata": {
                 "description": "Prefix for the storage account name"
             }
         },
         "accountType": {
-           "type": "string",
-           "defaultValue": "Standard_LRS",
-           "allowedValues": [
-               "Standard_LRS",
-               "Premium_LRS",
-               "Standard_RAGRS"
-           ],
-           "metadata": {
+            "type": "string",
+            "defaultValue": "Standard_LRS",
+            "allowedValues": [
+                "Standard_LRS",
+                "Premium_LRS",
+                "Standard_RAGRS"
+            ],
+            "metadata": {
                 "description": "SKU for the storage account"
             }
         }
@@ -40,5 +40,10 @@
             }
         }
     ],
-    "outputs": {}
+    "outputs": {
+        "storageAccount": {
+            "type": "string",
+            "value": "[variables('storageAccount')]"
+        }
+    }
 }
