@@ -213,13 +213,9 @@
         "type": "string",
         "value": "[concat('ssh ', parameters('adminUsername'), '@', reference(variables('pipName')).dnsSettings.fqdn)]"
       },
-      "standard": {
-          "type": "object",
-          "value": "[reference(variables('vmId'))]"
-      },
-      "full": {
-        "type": "object",
-        "value": "[reference(variables('vmId'), '2017-03-30', 'Full')]"
+      "osDiskId": {
+          "type": "string",
+          "value": "[reference(variables('vmId')).storageProfile.osDisk.managedDisk.id]"
       }
     }
   }
