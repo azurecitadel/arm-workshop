@@ -80,7 +80,6 @@
         "imageOffer": "UbuntuServer",
         "storageAccountType": "Standard_LRS",
         "storageAccountName": "[concat(uniquestring(resourceGroup().id), 'salinuxvm')]",
-        "vmId": "[resourceId('Microsoft.Compute/virtualMachines/', parameters('vmName'))]",
         "pipObject": {
             "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('pipName'))]"
         }
