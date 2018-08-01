@@ -207,18 +207,5 @@
             }
         }
     ],
-    "outputs": {
-        "hostname": {
-            "type": "string",
-            "value": "[reference(variables('pipName')).dnsSettings.fqdn]"
-        },
-        "sshCommand": {
-            "type": "string",
-            "value": "[concat('ssh ', parameters('adminUsername'), '@', reference(variables('pipName')).dnsSettings.fqdn)]"
-        },
-        "osDiskId": {
-            "type": "string",
-            "value": "[reference(variables('vmId')).storageProfile.osDisk.managedDisk.id]"
-        }
-    }
+    "outputs": {}
 }
