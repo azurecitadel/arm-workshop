@@ -1,0 +1,57 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "webAppName": {
+            "type": "string"
+        },
+        "locations": {
+           "type": "array",
+           "defaultValue": [
+               "westeurope",
+               "northeurope"
+           ],
+           "metadata": {
+                "description": "List of regions to deploy to"
+            }
+        }
+    },
+    "variables": {
+        "webAppPlan": "[concat(parameters('webAppName'), '-plan')]"
+    },
+    "resources": [
+        {
+            "copy": {
+                "name": "location",
+                "count": "[length(parameters('locations'))]"
+            },
+            "apiVersion": "2016-08-01",
+            "name": "[concat(parameters('webAppName'), '-', parameters('locations')[copyIndex()] )]",
+            "type": "Microsoft.Web/sites",
+            "properties": {
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', concat(variables('webAppPlan'), '-', parameters('locations')[copyIndex()] ))]"
+            },
+            "location": "[parameters('locations')[copyIndex()]]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/serverfarms', concat(variables('webAppPlan'), '-', parameters('locations')[copyIndex()] ))]"
+            ]
+        },
+        {
+            "copy": {
+                "name": "location",
+                "count": "[length(parameters('locations'))]"
+            },
+            "apiVersion": "2016-09-01",
+            "name": "[concat(variables('webAppPlan'), '-', parameters('locations')[copyIndex()] )]",
+            "type": "Microsoft.Web/serverfarms",
+            "location": "[parameters('locations')[copyIndex()]]",
+            "properties": {
+                "name": "[concat(variables('webAppPlan'), '-', parameters('locations')[copyIndex()] )]"
+            },
+            "sku": {
+                "Tier": "Free",
+                "Name": "F1"
+            }
+        }
+    ]
+}

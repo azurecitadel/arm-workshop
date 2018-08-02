@@ -1,0 +1,100 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "webAppPrefix": {
+            "type": "string",
+            "defaultValue":"myWebApp",
+            "metadata": {
+                "description": "Identifier to use at start of Web App name"
+            }
+        },
+        "locations": {
+            "type": "array",
+            "defaultValue": [
+                "westeurope",
+                "eastus2",
+                "westus2"
+            ],
+            "metadata": {
+                "description": "List of regions to deploy into"
+            }
+        },
+        "webAppsPerLocation": {
+            "type": "int",
+            "defaultValue": 5,
+            "metadata": {
+                "description": "Number of webapps per region"
+            }
+        }
+
+    },
+    "variables": {
+        "n": "[parameters('webAppsPerLocation')]",
+        "copy": [
+            {
+                "name": "plan",
+                "count": "[length(parameters('locations'))]",
+                "input": {
+                    "name": "[concat(parameters('webAppPrefix'), '-', parameters('locations')[copyIndex('plan')], '-plan')]",
+                    "loc": "[parameters('locations')[copyIndex('plan')]]",
+                    "id": "[resourceId('Microsoft.Web/serverfarms', concat(parameters('webAppPrefix'), '-', parameters('locations')[copyIndex('plan')], '-plan'))]"
+                }
+            },
+            {
+                "name": "app",
+                "count": "[mul(length(parameters('locations')), variables('n'))]",
+                "input": {
+                    "name": "[concat(parameters('webAppPrefix'), '-', parameters('locations')[div(copyIndex('app'), variables('n'))], '-', padLeft(mod(copyIndex('app'), variables('n')), 2, '0'))]",
+                    "loc": "[parameters('locations')[div(copyIndex('app'), variables('n'))]]",
+                    "plan": "[variables('plan')[div(copyIndex('app'), variables('n'))]]"
+                }
+            }
+        ]
+    },
+    "resources": [
+        {
+            "copy": {
+                "name": "apps",
+                "count": "[mul(length(parameters('locations')), parameters('webAppsPerLocation'))]"
+            },
+            "apiVersion": "2016-08-01",
+            "name": "[variables('app')[copyIndex()].name]",
+            "type": "Microsoft.Web/sites",
+            "properties": {
+                "serverFarmId": "[variables('app')[copyIndex()].plan.id]"
+            },
+            "location": "[variables('app')[copyIndex()].loc]",
+            "dependsOn": [
+                "[variables('app')[copyIndex()].plan.id]"
+            ]
+        },
+        {
+            "copy": {
+                "name": "location",
+                "count": "[length(parameters('locations'))]"
+            },
+            "apiVersion": "2016-09-01",
+            "name": "[variables('plan')[copyIndex()].name]",
+            "type": "Microsoft.Web/serverfarms",
+            "location": "[variables('plan')[copyIndex()].loc]",
+            "properties": {
+                "name": "[variables('plan')[copyIndex()].name]"
+            },
+            "sku": {
+                "Tier": "Free",
+                "Name": "F1"
+            }
+        }
+    ],
+    "outputs": {
+        "plan": {
+            "type": "array",
+            "value": "[variables('plan')]"
+        },
+        "app": {
+            "type": "array",
+            "value": "[variables('app')]"
+        }
+    }
+}

@@ -1,0 +1,51 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "webAppName": {
+            "type": "string"
+        },
+        "number": {
+           "type": "int",
+           "defaultValue": 3,
+           "metadata": {
+                "description": "Number of web apps per farm"
+            }
+        }
+    },
+    "variables": {
+        "webAppPlan": "[concat(parameters('webAppName'), '-plan')]",
+        "webAppPlanId": "[resourceId('Microsoft.Web/serverfarms', variables('webAppPlan'))]"
+    },
+    "resources": [
+        {
+            "copy": {
+                "name": "webApps",
+                "count": "[parameters('number')]"
+            },
+            "apiVersion": "2016-08-01",
+            "name": "[concat(parameters('webAppName'), copyIndex(1))]",
+            "type": "Microsoft.Web/sites",
+            "properties": {
+                "serverFarmId": "[variables('webAppPlanId')]"
+            },
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[variables('webAppPlanId')]"
+            ]
+        },
+        {
+            "apiVersion": "2016-09-01",
+            "name": "[variables('webAppPlan')]",
+            "type": "Microsoft.Web/serverfarms",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "name": "[variables('webAppPlan')]"
+            },
+            "sku": {
+                "Tier": "Free",
+                "Name": "F1"
+            }
+        }
+    ]
+}

@@ -1,0 +1,78 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "webAppName": {
+            "type": "string"
+        },
+        "locations": {
+            "type": "array",
+            "defaultValue": [
+                "westeurope",
+                "northeurope"
+            ],
+            "metadata": {
+                "description": "List of regions to deploy to"
+            }
+        }
+    },
+    "variables": {
+        "copy": [
+            {
+                "name": "webApp",
+                "count": "[length(parameters('locations'))]",
+                "input": {
+                    "loc": "[parameters('locations')[copyIndex('webApp')]]",
+                    "name": "[concat(parameters('webAppName'), '-', parameters('locations')[copyIndex('webApp')])]",
+                    "plan": "[concat(parameters('webAppName'), '-', parameters('locations')[copyIndex('webApp')], '-plan')]",
+                    "planId": "[resourceId('Microsoft.Web/serverfarms', concat(parameters('webAppName'), '-', parameters('locations')[copyIndex('webApp')], '-plan'))]"
+                }
+            }
+        ]
+    },
+    "resources": [
+        {
+            "copy": {
+                "name": "location",
+                "count": "[length(parameters('locations'))]"
+            },
+            "apiVersion": "2016-08-01",
+            "name": "[variables('webApp')[copyIndex()].name]",
+            "type": "Microsoft.Web/sites",
+            "properties": {
+                "serverFarmId": "[variables('webApp')[copyIndex()].planId]"
+            },
+            "location": "[variables('webApp')[copyIndex()].loc]",
+            "dependsOn": [
+                "[variables('webApp')[copyIndex()].planId]"
+            ]
+        },
+        {
+            "copy": {
+                "name": "location",
+                "count": "[length(parameters('locations'))]"
+            },
+            "apiVersion": "2016-09-01",
+            "name": "[variables('webApp')[copyIndex()].plan]",
+            "type": "Microsoft.Web/serverfarms",
+            "location": "[variables('webApp')[copyIndex()].loc]",
+            "properties": {
+                "name": "[variables('webApp')[copyIndex()].plan]"
+            },
+            "sku": {
+                "Tier": "Free",
+                "Name": "F1"
+            }
+        }
+    ],
+    "outputs": {
+        "webApp": {
+            "type": "array",
+            "value": "[variables('webApp')]"
+        },
+        "location": {
+            "type": "string",
+            "value": "[variables('webApp')[1].loc]"
+        }
+    }
+}
