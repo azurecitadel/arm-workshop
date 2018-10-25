@@ -2,10 +2,12 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "StorageAccount": {
+        "StorageAccountPrefix": {
             "type": "string",
+            "defaultValue": "jhstorageAcct",
+            "maxLength": 11,
             "metadata": {
-                "description": "Name For Storage Account"
+                "description": "Prefix For Storage Account Name"
             }
         },
         "AccountType": {
@@ -21,15 +23,17 @@
             }
         }
     },
-    "variables": {},
+    "variables": {
+        "StorageAccount":"[tolower(concat(parameters('StorageAccountPrefix'), uniqueString(resourceGroup().id )) ) ]"
+    },
     "resources": [
         {
             "type": "Microsoft.Storage/storageAccounts",
             "apiVersion": "2015-06-15",
-            "name": "[parameters('StorageAccount')]",
+            "name": "[variables('StorageAccount')]",
             "location": "[resourceGroup().location]",
             "tags": {
-                "displayName": "[parameters('StorageAccount')]"
+                "displayName": "[variables('StorageAccount')]"
             },
             "properties": {
                 "accountType": "[parameters('AccountType')]"
