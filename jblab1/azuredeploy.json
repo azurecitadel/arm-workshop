@@ -3,6 +3,19 @@
     "contentVersion": "1.0.0.0",
     "parameters": {},
     "variables": {},
-    "resources": [],
+    "resources": [
+        {
+            "type": "Microsoft.Storage/storageAccounts",
+            "apiVersion": "2015-06-15",
+            "name": "jlblab1",
+            "location": "[resourceGroup().location]",
+            "tags": {
+                "displayName": "jlblab1"
+            },
+            "properties": {
+                "accountType": "Standard_LRS"
+            }
+        }
+    ],
     "outputs": {}
 }
