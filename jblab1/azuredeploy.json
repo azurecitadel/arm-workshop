@@ -3,20 +3,20 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "storageAccount": {
-           "type": "string",
-           "metadata": {
+            "type": "string",
+            "metadata": {
                 "description": "Storage Account Name - Must Be Globally Unique"
             }
         },
         "accountType": {
-           "type": "string",
-           "defaultValue": "Standard_LRS",
-           "allowedValues": [
-               "Standard_LRS",
-               "Premium_LRS",
-               "Standard_RAGRS"
+            "type": "string",
+            "defaultValue": "Standard_LRS",
+            "allowedValues": [
+                "Standard_LRS",
+                "Premium_LRS",
+                "Standard_RAGRS"
             ],
-           "metadata": {
+            "metadata": {
                 "description": "Storage Account SKU Type"
             }
         }
