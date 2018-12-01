@@ -5,6 +5,7 @@
         "storageAccountPrefix": {
             "type": "string",
             "defaultValue": "jlb",
+            "maxLength": 11,
             "metadata": {
                 "description": "Storage Account Naming Prefix"
             }
@@ -32,12 +33,17 @@
             "name": "[variables('storageAccount')]",
             "location": "[resourceGroup().location]",
             "tags": {
-                "displayName": "[parameters('storageAccountPrefix')]"
+                "displayName": "[variables('storageAccount')]"
             },
             "properties": {
                 "accountType": "[parameters('accountType')]"
             }
         }
     ],
-    "outputs": {}
+    "outputs": {
+        "storageAccount": {
+            "type": "string",
+            "value": "[variables('storageAccount')]"
+        }
+    }
 }
