@@ -2,10 +2,11 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "storageAccount": {
+        "storageAccountPrefix": {
             "type": "string",
+            "defaultValue": "jlb",
             "metadata": {
-                "description": "Storage Account Name - Must Be Globally Unique"
+                "description": "Storage Account Naming Prefix"
             }
         },
         "accountType": {
@@ -21,15 +22,17 @@
             }
         }
     },
-    "variables": {},
+    "variables": {
+        "storageAccount": "[toLower(concat(parameters('storageAccountPrefix'), uniqueString(resourceGroup().id)))]"
+    },
     "resources": [
         {
             "type": "Microsoft.Storage/storageAccounts",
             "apiVersion": "2015-06-15",
-            "name": "[parameters('storageAccount')]",
+            "name": "[variables('storageAccount')]",
             "location": "[resourceGroup().location]",
             "tags": {
-                "displayName": "[parameters('storageAccount')]"
+                "displayName": "[parameters('storageAccountPrefix')]"
             },
             "properties": {
                 "accountType": "[parameters('accountType')]"
