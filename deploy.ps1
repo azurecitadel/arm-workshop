@@ -11,3 +11,8 @@ $job = 'job.' + ((Get-Date).ToUniversalTime()).tostring("MMddyy.HHmm")
 Test-AzResourceGroupDeployment -ResourceGroupName $rg -TemplateFile $template -TemplateParameterFile $parms -Mode Incremental
 
 New-AzResourceGroupDeployment -Name $job -ResourceGroupName $rg -TemplateFile $template -TemplateParameterFile $parms -Mode Incremental -DeploymentDebugLogLevel All -Verbose
+
+#If using Outputs utilize these commands for examples
+#$outputs = (New-AzResourceGroupDeployment -Name $job -TemplateParameterFile $parms -TemplateFile $template -ResourceGroupName $rg).Outputs
+#$hostName = $Outputs.hostname.Value
+#$sshCommand = $Outputs.sshCommand.Value
