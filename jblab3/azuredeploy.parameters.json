@@ -2,14 +2,19 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-      "adminUsername": {
-        "value": "jlbarm"
-      },
-      "adminPassword": {
-        "value": "Eleph@ntFootba!!Domination"
-      },
-      "dnsLabelPrefix": {
-        "value": "jlbarmlab3"
-      }
+        "adminUsername": {
+            "value": "jlbarm"
+        },
+        "adminPassword": {
+            "reference": {
+                "keyVault": {
+                    "id": "/subscriptions/f30702c5-148a-4ea6-baec-cca1d09e6c14/resourceGroups/keyVaults/providers/Microsoft.KeyVault/vaults/arm-workshop-secrets"
+                },
+                "secretName": "ubuntuDefaultPassword"
+            }
+        },
+        "dnsLabelPrefix": {
+            "value": "jlbarmlab3"
+        }
     }
-  }
+}
