@@ -19,11 +19,11 @@
                     "appSettings": []
                 },
                 "serverFarmId": "[variables('webAppPlanID')]",
-                "hostingEnvironment": "[parameters('hostingEnvironment')]"
+                "hostingEnvironment": ""
             },
             "location": "[resourceGroup().location]",
             "dependsOn": [
-                "[concat('Microsoft.Web/serverfarms/', variables('webAppPlanName'))]"
+                "[variables('webAppPlanID')]"
             ]
         },
         {
@@ -33,13 +33,13 @@
             "location": "[resourceGroup().location]",
             "properties": {
                 "name": "[variables('webAppPlanName')]",
-                "workerSizeId": "[parameters('workerSize')]",
+                "workerSizeId": "0",
                 "numberOfWorkers": "1",
-                "hostingEnvironment": "[parameters('hostingEnvironment')]"
+                "hostingEnvironment": ""
             },
             "sku": {
-                "Tier": "[parameters('sku')]",
-                "Name": "[parameters('skuCode')]"
+                "Tier": "Free",
+                "Name": "F1"
             }
         }
     ],
