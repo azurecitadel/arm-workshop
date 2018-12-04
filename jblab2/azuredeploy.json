@@ -5,7 +5,8 @@
         }
     },
     "variables": {
-        "webAppPlanName": "[concat(parameters('webAppName'), '-plan')]"
+        "webAppPlanName": "[concat(parameters('webAppName'), '-plan')]",
+        "webAppPlanID": "[resourceId(resourceGroup().name, 'Microsoft.Web/serverfarms', parameters('webAppName'))] "
     },
     "resources": [
         {
@@ -17,10 +18,10 @@
                 "siteConfig": {
                     "appSettings": []
                 },
-                "serverFarmId": "[concat('/subscriptions/', parameters('subscriptionId'),'/resourcegroups/', parameters('serverFarmResourceGroup'), '/providers/Microsoft.Web/serverfarms/', parameters('webAppPlanName'))]",
+                "serverFarmId": "[variables('webAppPlanID')]",
                 "hostingEnvironment": "[parameters('hostingEnvironment')]"
             },
-            "location": "[parameters('location')]",
+            "location": "[resourceGroup().location]",
             "dependsOn": [
                 "[concat('Microsoft.Web/serverfarms/', variables('webAppPlanName'))]"
             ]
@@ -29,7 +30,7 @@
             "apiVersion": "2016-09-01",
             "name": "[variables('webAppPlanName')]",
             "type": "Microsoft.Web/serverfarms",
-            "location": "[parameters('location')]",
+            "location": "[resourceGroup().location]",
             "properties": {
                 "name": "[variables('webAppPlanName')]",
                 "workerSizeId": "[parameters('workerSize')]",
