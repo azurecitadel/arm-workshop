@@ -6,7 +6,7 @@
     },
     "variables": {
         "webAppPlanName": "[concat(parameters('webAppName'), '-plan')]",
-        "webAppPlanID": "[resourceId(resourceGroup().name, 'Microsoft.Web/serverfarms', parameters('webAppName'))] "
+        "webAppPlanID": "[resourceId('Microsoft.Web/serverfarms', variables('webAppPlanName'))]"
     },
     "resources": [
         {
