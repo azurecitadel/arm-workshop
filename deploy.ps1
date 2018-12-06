@@ -25,3 +25,4 @@ New-AzResourceGroupDeployment -Name $job -ResourceGroupName $rg -TemplateFile $t
 #(Get-AzResourceGroupDeployment -ResourceGroupName $rg).Outputs
 #for this example an output was named vmref
 #(Get-AzResourceGroupDeployment -ResourceGroupName $rg).Outputs.vmref.value
+
