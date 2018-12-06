@@ -66,7 +66,7 @@
            "type": "string",
            "defaultValue": "Subnet",
            "metadata": {
-                "description": "Name of the subnet of the vNet"
+                "description": "Name of the subnet of the vNet - defaults to Subnet"
             }
         },
         "subnetPrefix": {

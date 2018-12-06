@@ -12,7 +12,7 @@ $template = "C:\users\jacobbe\git\arm-workshop\jblab3\azuredeploy.json"
 $parms = "C:\users\jacobbe\git\arm-workshop\jblab3\azuredeploy.parameters.json"
 $job = 'job.' + ((Get-Date).ToUniversalTime()).tostring("MMddyy.HHmm")
 
-Test-AzResourceGroupDeployment -ResourceGroupName $rg -TemplateFile $template -TemplateParameterFile $parms -Mode Incremental
+Test-AzResourceGroupDeployment -ResourceGroupName $rg -TemplateFile $template -TemplateParameterFile $parms -Mode Incremental -Verbose
 
 New-AzResourceGroupDeployment -Name $job -ResourceGroupName $rg -TemplateFile $template -TemplateParameterFile $parms -Mode Incremental -DeploymentDebugLogLevel All -Verbose
 
@@ -26,3 +26,4 @@ New-AzResourceGroupDeployment -Name $job -ResourceGroupName $rg -TemplateFile $t
 #for this example an output was named vmref
 #(Get-AzResourceGroupDeployment -ResourceGroupName $rg).Outputs.vmref.value
 
+Remove-AzResourceGroup -Name $rg 
