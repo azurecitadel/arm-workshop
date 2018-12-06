@@ -13,8 +13,11 @@
                 "secretName": "ubuntuDefaultPassword"
             }
         },
-        "dnsLabelPrefix": {
-            "value": "jlbarmlab3"
+        "vnetName": {
+            "value": "ubuntuVnet"
+        },
+        "subnetName": {
+            "value": "ubuntuSubnet"
         }
     }
 }

@@ -45,9 +45,35 @@
         },
         "vmName": {
             "type": "string",
-            "defaultValue": "myUbuntuVM",
             "metadata": {
                 "description": "Name of the VM"
+            }
+        },
+        "vnetName": {
+           "type": "string",
+           "metadata": {
+                "description": "Name of the vNET"
+            }
+        },
+        "vnetPrefix": {
+           "type": "string",
+           "defaultValue": "10.0.0.0/16",
+           "metadata": {
+                "description": "Prefix of the vNET in CIDR Format"
+            }
+        },
+        "subnetName": {
+           "type": "string",
+           "defaultValue": "Subnet",
+           "metadata": {
+                "description": "Name of the subnet of the vNet"
+            }
+        },
+        "subnetPrefix": {
+           "type": "string",
+           "defaultValue": "10.0.0.0/24",
+           "metadata": {
+                "description": "Prefix of the subnet in CIDR Format"
             }
         }
     },
@@ -55,16 +81,12 @@
         "storageAccountName": "[concat(uniquestring(resourceGroup().id), 'salinuxvm')]",
         "imagePublisher": "Canonical",
         "imageOffer": "UbuntuServer",
-        "nicName": "myVMNic",
-        "addressPrefix": "10.0.0.0/16",
-        "subnetName": "Subnet",
-        "subnetPrefix": "10.0.0.0/24",
+        "nicName": "[concat(parameters('vmname'), '-nic')]",
         "storageAccountType": "Standard_LRS",
-        "publicIPAddressName": "myPublicIP",
-        "publicIPAddressType": "Dynamic",
-        "vmSize": "Standard_A1",
-        "virtualNetworkName": "MyVNET",
-        "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnetName'))]",
+        "pipName": "[concat(parameters('vmName'), '-pip')]",
+        "pipType": "Dynamic",
+        "vmSize": "Standard_B1s",
+        "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnetName'), parameters('subnetName'))]",
         "vmID": "[resourceId('microsoft.Compute/VirtualMachines', parameters('vmName'))]"
     },
     "resources": [
@@ -82,10 +104,10 @@
         {
             "apiVersion": "2017-06-01",
             "type": "Microsoft.Network/publicIPAddresses",
-            "name": "[variables('publicIPAddressName')]",
+            "name": "[variables('pipName')]",
             "location": "[parameters('location')]",
             "properties": {
-                "publicIPAllocationMethod": "[variables('publicIPAddressType')]",
+                "publicIPAllocationMethod": "[variables('pipType')]",
                 "dnsSettings": {
                     "domainNameLabel": "[parameters('dnsLabelPrefix')]"
                 }
@@ -94,19 +116,19 @@
         {
             "apiVersion": "2017-06-01",
             "type": "Microsoft.Network/virtualNetworks",
-            "name": "[variables('virtualNetworkName')]",
+            "name": "[parameters('vnetName')]",
             "location": "[parameters('location')]",
             "properties": {
                 "addressSpace": {
                     "addressPrefixes": [
-                        "[variables('addressPrefix')]"
+                        "[parameters('vnetPrefix')]"
                     ]
                 },
                 "subnets": [
                     {
-                        "name": "[variables('subnetName')]",
+                        "name": "[parameters('subnetName')]",
                         "properties": {
-                            "addressPrefix": "[variables('subnetPrefix')]"
+                            "addressPrefix": "[parameters('subnetPrefix')]"
                         }
                     }
                 ]
@@ -118,8 +140,8 @@
             "name": "[variables('nicName')]",
             "location": "[parameters('location')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/publicIPAddresses/', variables('publicIPAddressName'))]",
-                "[resourceId('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
+                "[resourceId('Microsoft.Network/publicIPAddresses/', variables('pipName'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks/', parameters('vnetName'))]"
             ],
             "properties": {
                 "ipConfigurations": [
@@ -128,7 +150,7 @@
                         "properties": {
                             "privateIPAllocationMethod": "Dynamic",
                             "publicIPAddress": {
-                                "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]"
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('pipName'))]"
                             },
                             "subnet": {
                                 "id": "[variables('subnetRef')]"
@@ -193,11 +215,11 @@
     "outputs": {
         "hostname": {
             "type": "string",
-            "value": "[reference(variables('publicIPAddressName')).dnsSettings.fqdn]"
+            "value": "[reference(variables('pipName')).dnsSettings.fqdn]"
         },
         "sshCommand": {
             "type": "string",
-            "value": "[concat('ssh ', parameters('adminUsername'), '@', reference(variables('publicIPAddressName')).dnsSettings.fqdn)]"
+            "value": "[concat('ssh ', parameters('adminUsername'), '@', reference(variables('pipName')).dnsSettings.fqdn)]"
         },
         "osDiskId": {
           "type": "string",
