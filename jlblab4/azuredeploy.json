@@ -88,8 +88,9 @@
         "pipType": "Dynamic",
         "vmSize": "Standard_B1s",
         "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnetName'), parameters('subnetName'))]",
-        "vmID": "[resourceId('microsoft.Compute/VirtualMachines', parameters('vmName'))]",
-        "pip?": "[not(empty(parameters('dnsLabelPrefix')))]"
+        "pip?": "[not(empty(parameters('dnsLabelPrefix')))]",
+        "pipObject": "[resourceId('Microsoft.Network/publicIPAddresses', variables('pipName'))]",
+        "vnetID": "[resourceId('Microsoft.Network/virtualNetworks/', parameters('vnetName'))]"
     },
     "resources": [
         {
@@ -144,7 +145,7 @@
             "location": "[parameters('location')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/publicIPAddresses/', variables('pipName'))]",
-                "[resourceId('Microsoft.Network/virtualNetworks/', parameters('vnetName'))]"
+                "[variables('vnetID')]"
             ],
             "properties": {
                 "ipConfigurations": [
@@ -152,9 +153,7 @@
                         "name": "ipconfig1",
                         "properties": {
                             "privateIPAllocationMethod": "Dynamic",
-                            "publicIPAddress": {
-                                "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('pipName'))]"
-                            },
+                            "publicIPAddress": "[if(variables('pip?'), variables('pipObject'), json('null'))]",
                             "subnet": {
                                 "id": "[variables('subnetRef')]"
                             }
