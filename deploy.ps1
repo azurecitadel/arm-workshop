@@ -4,13 +4,16 @@ Get-AzSubscription
 Select-AzSubscription -Subscription 'f30702c5-148a-4ea6-baec-cca1d09e6c14'
 
 #Create a new resource group if it doesn't exist already
-New-AzResourceGroup -Name "lab5" -Location "Central US"
+New-AzResourceGroup -Name "lab6" -Location "Central US"
 
 #Update the file paths if you need to
-$rg = "lab5"
-$template = "C:\users\jacobbe\git\arm-workshop\jlblab5\azuredeploy.json"
-$parms = "C:\users\jacobbe\git\arm-workshop\jlblab5\azuredeploy.parameters.json"
+$rg = "lab6"
+$template = "C:\users\jacobbe\git\arm-workshop\jlblab6\azuredeploy.json"
+$parms = "C:\users\jacobbe\git\arm-workshop\jlblab6\azuredeploy.parameters.json"
 $job = 'job.' + ((Get-Date).ToUniversalTime()).tostring("MMddyy.HHmm")
+
+#For Lab6
+New-AzResourceGroupDeployment -Name $job -ResourceGroupName $rg -TemplateFile C:\users\jacobbe\git\arm-workshop\jlblab6\tshirts.json -Mode Incremental -DeploymentDebugLogLevel All -Verbose -vmSize large
 
 Test-AzResourceGroupDeployment -ResourceGroupName $rg -TemplateFile $template -TemplateParameterFile $parms -Mode Incremental -Verbose `
 -NumberofDataDisk 2 -vmName jlblabvm1
