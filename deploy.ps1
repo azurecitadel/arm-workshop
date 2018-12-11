@@ -4,21 +4,19 @@ Get-AzSubscription
 Select-AzSubscription -Subscription 'f30702c5-148a-4ea6-baec-cca1d09e6c14'
 
 #Create a new resource group if it doesn't exist already
-New-AzResourceGroup -Name "lab4" -Location "Central US"
+New-AzResourceGroup -Name "lab5" -Location "Central US"
 
 #Update the file paths if you need to
-$rg = "lab4"
-$template = "C:\users\jacobbe\git\arm-workshop\jlblab4\azuredeploy.json"
-$parms = "C:\users\jacobbe\git\arm-workshop\jlblab4\azuredeploy.parameters.json"
+$rg = "lab5"
+$template = "C:\users\jacobbe\git\arm-workshop\jlblab5\azuredeploy.json"
+$parms = "C:\users\jacobbe\git\arm-workshop\jlblab5\azuredeploy.parameters.json"
 $job = 'job.' + ((Get-Date).ToUniversalTime()).tostring("MMddyy.HHmm")
 
-Test-AzResourceGroupDeployment -ResourceGroupName $rg -TemplateFile $template -TemplateParameterFile $parms -Mode Incremental -Verbose
+Test-AzResourceGroupDeployment -ResourceGroupName $rg -TemplateFile $template -TemplateParameterFile $parms -Mode Incremental -Verbose `
+-NumberofDataDisk 2 -vmName jlblabvm1
 
-New-AzResourceGroupDeployment -Name $job -ResourceGroupName $rg -TemplateFile $template -TemplateParameterFile $parms -Mode Incremental -DeploymentDebugLogLevel All -Verbose 
-
-#For Lab4
 New-AzResourceGroupDeployment -Name $job -ResourceGroupName $rg -TemplateFile $template -TemplateParameterFile $parms -Mode Incremental -DeploymentDebugLogLevel All -Verbose `
--vmName jlblab4vm2 -dnsLabelPrefix jlblab4vm2
+-NumberofDataDisk 2 -vmName jlblabvm1
 
 #If the template utilizes outputs these commands can be ued to extract the values
 #$outputs = (New-AzResourceGroupDeployment -Name $job -TemplateParameterFile $parms -TemplateFile $template -ResourceGroupName $rg).Outputs
